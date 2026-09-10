@@ -1,0 +1,14 @@
+2026/08/31-16:55:46.155 9b2c Reusing MANIFEST d:\1\Codes\learn-ai-Hoxsil\learn-python\爬虫相关\selenium 请求\chrome_profile\Default\Local Storage\leveldb/MANIFEST-000001
+2026/08/31-16:55:46.158 9b2c Recovering log #48
+2026/08/31-16:55:46.159 9b2c Level-0 table #50: started
+2026/08/31-16:55:46.165 9b2c Level-0 table #50: 23332 bytes OK
+2026/08/31-16:55:46.171 9b2c Delete type=0 #48
+2026/08/31-16:55:46.172 9960 Compacting 4@0 + 1@1 files
+2026/08/31-16:55:46.178 9960 Generated table #52@0: 24 keys, 12142 bytes
+2026/08/31-16:55:46.178 9960 Compacted 4@0 + 1@1 files => 12142 bytes
+2026/08/31-16:55:46.183 9960 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/08/31-16:55:46.183 9960 Delete type=2 #40
+2026/08/31-16:55:46.184 9960 Delete type=2 #42
+2026/08/31-16:55:46.184 9960 Delete type=2 #45
+2026/08/31-16:55:46.184 9960 Delete type=2 #47
+2026/08/31-16:55:46.184 9960 Delete type=2 #50
