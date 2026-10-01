@@ -1,33 +1,30 @@
 import requests
 import re
-import pymongo
+import os
 import json
 
+FOLDER_PATH = os.path.dirname(os.path.abspath(__file__))
+STORAGE_FILE_PATH = os.path.join(FOLDER_PATH, "福大教务处消息.txt")
 
-cookies = {
-    '_gscu_1331749010': '83249076fv3xl414',
-    'JSESSIONID': '968AA8D49EB930AAF349FDA73861C36F',
-}
 
 headers = {
-    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-    'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
-    'cache-control': 'max-age=0',
-    'if-modified-since': '',
-    'if-none-match': '',
-    'priority': 'u=0, i',
-    'sec-ch-ua': '"Chromium";v="152", "Not?A_Brand";v="24", "Microsoft Edge";v="152"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Windows"',
-    'sec-fetch-dest': 'document',
-    'sec-fetch-mode': 'navigate',
-    'sec-fetch-site': 'cross-site',
-    'sec-fetch-user': '?1',
-    'upgrade-insecure-requests': '1',
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0',
-    # 'cookie': '_gscu_1331749010=83249076fv3xl414; JSESSIONID=968AA8D49EB930AAF349FDA73861C36F',
+  "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+  "Accept-Encoding": "gzip, deflate, br, zstd",
+  "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
+  "Cache-Control": "max-age=0",
+  "Connection": "keep-alive",
+  "Cookie": "JSESSIONID=859C4BCBDB6BE5333D03AE35F7F25B90",
+  "Host": "jwch.fzu.edu.cn",
+  "Sec-Fetch-Dest": "document",
+  "Sec-Fetch-Mode": "navigate",
+  "Sec-Fetch-Site": "none",
+  "Sec-Fetch-User": "?1",
+  "Upgrade-Insecure-Requests": "1",
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+  "sec-ch-ua": "\"Chromium\";v=\"152\", \"Not?A_Brand\";v=\"24\", \"Microsoft Edge\";v=\"152\"",
+  "sec-ch-ua-mobile": "?0",
+  "sec-ch-ua-platform": "\"Windows\""
 }
-
 
 # 两个参数分别是 要爬取的页面数 福大教务处通知第二页的网址上的数字
 def get_urls(all_page_num, page_two_num):
@@ -35,12 +32,12 @@ def get_urls(all_page_num, page_two_num):
     fzu_urls.append('https://jwch.fzu.edu.cn/jxtz.htm')
     num = 1
     while num < all_page_num:
-        fzu_urls.append('https://jwch.fzu.edu.cn/jxtz/' + str(214 - num) + '.htm')
+        fzu_urls.append('https://jwch.fzu.edu.cn/jxtz/' + str(page_two_num + 1 - num) + '.htm')
         num += 1
     return fzu_urls
 
 def get_one_page(url):
-    response = requests.get(url, cookies=cookies, headers=headers)
+    response = requests.get(url, headers=headers)
     if response.status_code == 200:
         response.encoding = 'UTF-8-SIG'
         return response.text
@@ -49,10 +46,10 @@ def get_one_page(url):
         return ''
 
 def trace_accessory(url):
-    if len(url) >= 44:
+    if len(url) >= 45:
         print("附件请求失败，需要验证码！")
         return "Error"
-    response = requests.get(url, cookies=cookies, headers=headers)
+    response = requests.get(url, headers=headers)
     if response.status_code == 200:
         response.encoding = 'UTF-8-SIG'
         text = response.text
@@ -74,7 +71,7 @@ def trace_accessory(url):
                     'randomid': 'nattach'
                 }
                 click_times_url = 'https://jwch.fzu.edu.cn/system/resource/code/news/click/clicktimes.jsp'
-                accessory_response = requests.get(click_times_url, headers=headers, cookies=cookies, params=params)
+                accessory_response = requests.get(click_times_url, headers=headers, params=params)
                 click_times = re.findall(r'"wbshowtimes":(.*?),',accessory_response.text)
                 accessory_list.append({'序号': accessory_num, '标题': title, '附件下载地址':accessory_url, '下载次数':click_times})
                 accessory_num += 1
@@ -86,9 +83,10 @@ def trace_accessory(url):
 def parse_one_page(html):
     pattern = re.compile(r'([0-9]{4}-[0-9]{2}-[0-9]{2}).*?' +
                          r'</span>【(.*?)】.*?' + 
-                         r'<a href="(.*?)".*?' +
+                         r'<a href=".*?(info.*?)".*?' +
                          r'_blank" title="(.*?)">', re.S)
     raw_inform_list = re.findall(pattern, html)
+    print(raw_inform_list)
     inform_list = []
 
     # 对原始的提取数据加工
@@ -96,6 +94,7 @@ def parse_one_page(html):
         title = tuple[3]
         informant = tuple[1]
         date = tuple[0]
+        print("详细页地址：", tuple[2])
         detail_url = 'https://jwch.fzu.edu.cn/' + tuple[2]
         accessory_list = trace_accessory(detail_url)
         inform_list.append({'标题': title, '通知人': informant, '日期': date, '正文地址': detail_url, '附件': accessory_list})
@@ -103,16 +102,18 @@ def parse_one_page(html):
     return inform_list
 
 
-fzu_urls = get_urls(5, 213)
+fzu_urls = get_urls(13, 214)
 
 inform_list = []
-print(fzu_urls[0])
 
 for url in fzu_urls:
+    print("正在处理:", url, "...")
     html = get_one_page(url)
+    print("获取原始 html 数据成功！")
+    print(html[:400])
     page_inform_list = parse_one_page(html)
     inform_list.extend(page_inform_list)
 
-with open("福大教务处消息.txt", 'w', encoding='utf-8') as f:
+with open(STORAGE_FILE_PATH, 'w', encoding='utf-8') as f:
     json.dump(inform_list, f, ensure_ascii=False, indent = 2)
     print("数据存储完成")
