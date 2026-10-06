@@ -5,11 +5,12 @@
             "label": "C/C++: g++.exe build active file",
             "command": "D:\\Download\\w64devkit\\bin\\g++.exe",
             "args": [
-                "-fdiagnostics-color=always",
                 "-g",
                 "${file}",
                 "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+                "${fileDirname}\\${fileBasenameNoExtension}.exe",
+                "-finput-charset=UTF-8",
+                "-fexec-charset=UTF-8"
             ],
             "options": {
                 "cwd": "${fileDirname}"

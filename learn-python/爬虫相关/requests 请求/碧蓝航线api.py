@@ -2,11 +2,16 @@ import requests
 
 api_url = 'https://wiki.biligame.com/blhx/api.php'
 
+categroy = ""
+
 params = {
-    'action': 'query',
-    'titles': '分类:方案舰娘',
+    "action": "query",
     "list": "categorymembers",
-    'format': 'json'
+    "cmtitle": "category",
+    "cmlimit": "500",
+    "format": "json",
+    "formatversion": "2",
+    "maxlag": "5"
 }
 
 headers = {
@@ -24,6 +29,9 @@ headers = {
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"Windows"',
     # 'Cookie': 'gamecenter_wiki_UserName=409046849; gamecenter_wiki_UserGroups=bilibili; gamecenter_wiki__session=kmks02e6jonr0khmh5cadshkjm65s1m2; gamecenter_wiki_UserID=4627359; DedeUserID=409046849; DedeUserID__ckMd5=f1dd84d67ab6a654; SESSDATA=dcf126f5%2C1803647691%2C2f707%2A81CjBu6cDDfl2xXJhEEBIvpBae74Z4zzBpp8neEgctnQBWbNz5asRqJazUjEJf57OXkbUSVmxjcTNHaUFwQlJQU0NXN0dCaXJKeFE1OGY4azJNMXJrUTlPS1RPZWdvYjZqUEszcVp4aVNjLXRmQWRVLU1Tc0Jsbm5oNHBNWHhIOEFBOWEyMEhTcnFBIIEC; bili_jct=3e183e13273f9c6e08a72e335f80a431; sid=h10zc0ls; b_nut=1788260468; buvid3=0A0AFAF1-1CB6-2651-3293-8643748BD9E071534infoc; buvid_fp=62e3c199d296afddee17cf42cc39d37d; buvid4=0F039B47-1559-4021-3756-4E642B2F057C71803-026090119-lztCIumAysAxIuVLxHX1upnJgqZ7TO4iL/y2M+2lBAr9pd1oeSK4kii8lTkrkVUz; Hm_lvt_cb50e488eca598646f26b3bf09b83ada=1788260469,1788270269,1788333661; HMACCOUNT=2A8CDEF579ECC277; Hm_lpvt_cb50e488eca598646f26b3bf09b83ada=1788335267; b_lsid=F8C59AFB_1A06116D350',
+}
+categroy_prefix_map = {
+    "Category:方案舰娘": "PR",
 }
 
 response = requests.get(api_url, params=params, headers=headers)
