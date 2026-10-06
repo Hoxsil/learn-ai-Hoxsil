@@ -130,7 +130,7 @@ for filename in os.listdir(FLODER_PATH):
 
 for filename in png_names:
     file_path = os.path.join(FLODER_PATH, filename)
-    input_data = board_to_matrix(file_path, x1, y1, x2, y2, color_threshold=10)
+    input_data = board_to_matrix(file_path, x1, y1, x2, y2, color_threshold=15)
     input_data = matrix_to_cpp_input(input_data)
     print("input_data:")
     print(input_data)
